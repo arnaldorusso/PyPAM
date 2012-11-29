@@ -20,7 +20,6 @@ def extract(arq):
     saturated light pulses
     '''
     #f = open(sys.argv[1],'r')
-    #f = open('/DADOS/Dropbox/Experimento/Experimento_Cultivo_Geral.csv','r')
     f = open(arq,'r')
     t = f.readlines()
     f.close()

@@ -51,7 +51,8 @@ def extract(arq):
                 new_dict[k].append(v)
     dicts.append(new_dict)
 
-
+    # FIXME Insert some functionalities to exclude
+    #       duplicate measures
     curves = [l for l in dicts if len(l['No.']) >= 19]
     del curves[16] #retira a medida duplicada do arquivo
 

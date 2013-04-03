@@ -1,3 +1,0 @@
-[console_scripts]
-PyPAM = pypam:main
-

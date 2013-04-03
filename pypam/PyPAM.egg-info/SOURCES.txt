@@ -1,0 +1,11 @@
+MANIFEST.in
+NEWS.txt
+README.rst
+setup.py
+src/PyPAM.egg-info/PKG-INFO
+src/PyPAM.egg-info/SOURCES.txt
+src/PyPAM.egg-info/dependency_links.txt
+src/PyPAM.egg-info/entry_points.txt
+src/PyPAM.egg-info/not-zip-safe
+src/PyPAM.egg-info/top_level.txt
+src/pypam/__init__.py

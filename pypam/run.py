@@ -4,21 +4,36 @@
 import sys
 import glob
 from os import chdir
+import csv
 
-from PyPAM.pam import extract
-from PyPAM.visuals import etr_plot, yield_plot
+from pypam.parse import extract
+from pypam.visuals import etr_plot, yield_plot
 
-chdir(sys.argv[1])
+def main(dirs):
+    """
+    Input the directory of .csv files to be parsed and analysed.
 
-for name in glob.glob('*.csv'):
-    arq_name = "".join(name.split('.')[0:-1])
-    newdir = os.path.join('fig', arq_name)
-    try:
-        os.makedirs(newdir)
-    except OSError:
-        print ('diretorio já existe: %s' % newdir)
-    else:
-        print ('criado diretorio %s' % newdir)
-    
-    curves, pulses = extract(name) # curves, pulses
-    etr_plot(curves, newdir)
+    """
+    chdir(dirs)
+    for name in glob.glob('*.csv'):
+        arq_name = "".join(name.split('.')[0:-1])
+        newdir = os.path.join('fig', arq_name)
+        try:
+            os.makedirs(newdir)
+        except OSError:
+            print ('Directory already exists: %s' % newdir)
+        else:
+            print ('%s directory created.' % newdir)
+        
+        curves, pulses = extract(name) # curves, pulses
+        etr_plot(curves, newdir)
+        f = open(newdir + '/' + 'data_' + arq_name, 'wb')
+        w = csv.writer(f)
+        w.writerows(curves.items())
+        w.writerows(pulses.items())
+        f.close()
+
+
+if __name__ == '__main__':
+    main(sys.argv[1])
+

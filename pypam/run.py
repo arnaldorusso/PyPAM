@@ -3,7 +3,7 @@
 
 import sys
 import glob
-from os import chdir
+from os import chdir path 
 import csv
 
 from pypam.parse import extract
@@ -14,7 +14,7 @@ def main(dirs):
     Input the directory of .csv files to be parsed and analysed.
 
     """
-    chdir(dirs)
+    chdir(path.abspath(dirs))
     for name in glob.glob('*.csv'):
         arq_name = "".join(name.split('.')[0:-1])
         newdir = os.path.join('fig', arq_name)
@@ -27,7 +27,8 @@ def main(dirs):
         
         curves, pulses = extract(name) # curves, pulses
         etr_plot(curves, newdir)
-        f = open(newdir + '/' + 'data_' + arq_name, 'wb')
+        fname = path.join(newdir,'data_' + arq_name) 
+        f = open(fname, 'wb')
         w = csv.writer(f)
         w.writerows(curves.items())
         w.writerows(pulses.items())

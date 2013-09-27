@@ -14,8 +14,8 @@ def main(dirs):
     Input the directory of .csv files to be parsed and analysed.
 
     """
-    chdir(path.abspath(dirs))
-    for name in glob.glob('*.csv'):
+    indir = path.abspath(dirs)
+    for name in glob.glob((path.join(indir,'*.csv'))):
         arq_name = "".join(name.split('.')[0:-1])
         newdir = os.path.join('fig', arq_name)
         try:
@@ -27,7 +27,7 @@ def main(dirs):
         
         curves, pulses = extract(name) # curves, pulses
         etr_plot(curves, newdir)
-        fname = path.join(newdir,'data_' + arq_name) 
+        fname = path.join(newdir,'data_'+arq_name) 
         f = open(fname, 'wb')
         w = csv.writer(f)
         w.writerows(curves.items())

@@ -8,16 +8,17 @@ import sys
 
 def extract(arq):
     '''
-    INPUT
-    ----------------
+    Parse a csv processed file by PhytoWIN.
+    PhytoWIN is a software by WALZ, to proccess PhytoPAM data.
+    
+    Parameters
+    ----------
     arq: opened csv file
     
-    OUTPUT
-    ----------------
-    curves:
-    Store the "Rapid Light Curves"
-    pulses:
-    saturated light pulses
+    Returns
+    -------
+    curves : Store the "Rapid Light Curves"
+    pulses : Saturated light pulses
     '''
     #f = open(sys.argv[1],'r')
     f = open(arq,'r')

@@ -6,10 +6,11 @@ import re
 import sys
 
 
-def extract(arq):
+def csv_extract(arq):
     '''
     Parse a csv processed file by PhytoWIN.
-    PhytoWIN is a software by WALZ, to proccess PhytoPAM data.
+    PhytoWIN is a software from WALZ ind., to proccess PhytoPAM data.
+    http://www.walz.com/products/chl_p700/phyto-pam/phytowin.html
     
     Parameters
     ----------
@@ -77,10 +78,11 @@ def raw_extract(arq):
     f.close()
 
     infos = re.compile("[0-9]{2}[A-Z]{3}[0-9]{4}")
-    gain = re.compile("[A-Z]{4}", flags=re.I)
+    gain = re.compile("[A-Z]{4}", flags=re.I) #flag for case Insensitive
     comments = re.compile("%")
     header = re.compile("No   Time")
     dados = re.compile("[0-9]{1,2}\s*[0-9]{2}")
+    first = re.compile("[1]{1}\s")
     dicts = []
     new_dict = {'comments':[], 'gain':[], 'info':[]}
     keys = []
@@ -98,40 +100,36 @@ def raw_extract(arq):
             new_dict['gain'].append(line)
 
         if re.match(header,line):
-            keys = line.split()
-            for k in keys:
-                new_dict[k] = []
+            keys = line.split() 
 
         if re.match(infos,line):
             new_dict['info'].append(line)
 
         if re.match(dados,line):
-            if line.split()[0] == str(1):
-                if new_dict:
-                    dicts.append(new_dict)
+            if re.match(first,line):
+                old_dict = new_dict                
                 new_dict = {'comments':[], 'gain':[], 'info':[]}
                 for k in keys:
                     new_dict[k] = []
+                dicts.append(old_dict)
+            
             data = line.split()
             values = zip(keys, data)
             for k,v in values:
                 new_dict[k].append(v)
 
     dicts.append(new_dict)
-    return dicts
-
+        
     ## FIXME Insert some functionalities to exclude
     ##       duplicate measures
-    #curves = [l for l in dicts if len(l['No.']) >= 19]
-    ##del curves[16] #retira a medida duplicada do arquivo
+    curves = [l for l in dicts[1:] if len(l['No']) >= 16]
 
-    #pulses = []
-    #for k in dicts:
-        #if k['No.']:
-            #if len(k['No.']) < 19:
-                #if len(k['No.']) <= 3:
-                    #pulses.append(k)
-    ##del pulses[16] # retira medida duplicada do arquivo.
-
-    #return curves, pulses
+    pulses = []
+    for k in dicts[1:]:
+        if k['No']:
+            if len(k['No']) < 19:
+                if len(k['No']) <= 3:
+                    pulses.append(k)
+    
+    return curves, pulses
 

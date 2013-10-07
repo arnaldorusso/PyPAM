@@ -31,8 +31,8 @@ setup(name='PyPAM',
     package_dir = {'': 'pypam'},include_package_data=True,
     zip_safe=False,
     install_requires=install_requires,
-    entry_points={
-        'console_scripts':
-            ['PyPAM=pypam:main']
-    }
+    #entry_points={
+    #    'console_scripts':
+    #        ['PyPAM=pypam:main']
+    #}
 )

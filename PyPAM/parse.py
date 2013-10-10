@@ -39,7 +39,7 @@ def csv_extract(arq):
             keys = line.split(',')
             for k in keys:
                 new_dict[k] = []
-        elif re.match(pre_dados,line): #
+        elif re.match(pre_dados,line):
             if line.split(',')[2] == str(1):
                 #print line
                 if new_dict:
@@ -55,14 +55,14 @@ def csv_extract(arq):
 
     # FIXME Insert some functionalities to exclude
     #       duplicate measures
-    curves = [l for l in dicts if len(l['No.']) >= 19]
+    curves = [l for l in dicts if len(l['No.']) >= 16]
     #del pulses[16] # duplicated in the file.
 
 
     pulses = []
     for k in dicts:
         if k['No.']:
-            if len(k['No.']) < 19:
+            if len(k['No.']) < 16:
                 if len(k['No.']) <= 3:
                     pulses.append(k)
 
@@ -105,7 +105,7 @@ def raw_extract(arq):
         if re.match(infos,line):
             new_dict['info'].append(line)
 
-        if re.match(dados,line):
+        elif re.match(dados,line):
             if re.match(first,line):
                 old_dict = new_dict                
                 new_dict = {'comments':[], 'gain':[], 'info':[]}
@@ -127,7 +127,7 @@ def raw_extract(arq):
     pulses = []
     for k in dicts[1:]:
         if k['No']:
-            if len(k['No']) < 19:
+            if len(k['No']) < 16:
                 if len(k['No']) <= 3:
                     pulses.append(k)
     

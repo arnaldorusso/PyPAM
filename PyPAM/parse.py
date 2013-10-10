@@ -72,6 +72,21 @@ def csv_extract(arq):
 
 
 def raw_extract(arq):
+    '''
+    Parse raw data obtained with Phyto-Pam.
+    This raw data is an .rpt file containing
+    values of curves records, and other useful
+    informations.    
+    
+    Parameters
+    ----------
+    arq: opened csv file
+    
+    Returns
+    -------
+    curves : Store the "Rapid Light Curves"
+    pulses : Saturated light pulses
+    '''
 
     f = open(arq,'r')
     t = f.readlines()

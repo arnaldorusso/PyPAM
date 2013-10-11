@@ -12,17 +12,19 @@ compr = ['470nm', '520nm', '645nm', '665nm']
 
 
 
-def etr_plot(curves, indir):
+def etr_plot(curves, indir='.', subplot=False):
     '''
     Relative Electron Transference Rate plots.
 
     INPUT
     -----
     curves : list of curves
-    indir : directory to save plots.
+    indir : directory to save plots. Default current directory
+    subplot : Default False.
 
     OUTPUT
     ------
+    Return =     
     Figure saved (png)
     '''
     light = []
@@ -30,8 +32,11 @@ def etr_plot(curves, indir):
     opts = []
     x = []
     y = []
+
+    if type(curves) != list:
+        raise TypeError('variable "curves", must be a list')
+
     for cur in curves:
-    #for cur in curves[0,26]:
         light.append(np.float64(cur['PAR']))
         etr.append(np.float64(cur['ETR1'])/1000.)
         etr.append(np.float64(cur['ETR2'])/1000.)
@@ -56,27 +61,30 @@ def etr_plot(curves, indir):
             }""")
             r('etr_sim<-optim(par=c(0.4, 1.5 , 80),fn=platt)')
             opts.append(r('min_ad(par = etr_sim$par)'))
-        #plt.subplot(6,5,cur+1)
-        for i in xrange(len(opts)):
-            #plt.figure(figsize=(8, 6), dpi=80)
-            plt.subplot(6,5,cur+1)
-            plt.subplots_adjust(wspace=0.2, hspace=0.7) #adjust spaces between subplots
-            plt.plot(light[0],etr[i], 'o', color=str(colors[i]))
-            plt.ylim(0, 100)
-            plt.xlabel('Luz (PAR)')
-            plt.ylabel(u'(ETR)')
-            plt.plot(np.sort(light[0]), np.sort(opts[i]), color=str(colors[i]), label=str(compr[i]))
-            plt.legend(loc='upper left', prop={'size':7})  #markerscale=0.1, borderpad=0.1, labelspacing=0.1, mpl.font_manager.FontManager(size=10))#,ncol=4,prop=font_manager.FontProperties(size=10))
-            plt.title(str(curves[cur]['Date'][0]+' '+curves[cur]['Time'][0]))
-        light = []
-        etr = []
-        e_sim = []
-        opts = []
-        x = []
-        y = []
-    plt.savefig(indir + str(curves[cur]['Date'][0]+'_'+ curves[cur]['Time'][0] + '.png'))
-    #plt.show()
 
+        if subplot==True:
+            #plt.subplot(6,5,cur+1)
+            for i in xrange(len(opts)):
+                #plt.figure(figsize=(8, 6), dpi=80)
+                plt.subplot(6,5,cur+1)
+                plt.subplots_adjust(wspace=0.2, hspace=0.7) #adjust spaces between subplots
+                plt.plot(light[0],etr[i], 'o', color=str(colors[i]))
+                plt.ylim(0, 100)
+                plt.xlabel('Luz (PAR)')
+                plt.ylabel(u'(ETR)')
+                plt.plot(np.sort(light[0]), np.sort(opts[i]), color=str(colors[i]), label=str(compr[i]))
+                plt.legend(loc='upper left', prop={'size':7})  #markerscale=0.1, borderpad=0.1, labelspacing=0.1, mpl.font_manager.FontManager(size=10))#,ncol=4,prop=font_manager.FontProperties(size=10))
+                plt.title(str(curves[cur]['Date'][0]+' '+curves[cur]['Time'][0]))
+            light = []
+            etr = []
+            e_sim = []
+            opts = []
+            x = []
+            y = []
+        if subplot==True:
+            plt.savefig(indir + str(curves[cur]['Date'][0]+'_'+ curves[cur]['Time'][0] + '.png'))
+        
+        return opts
 
 
 def yield_plot(pulses, indir):

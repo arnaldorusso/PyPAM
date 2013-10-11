@@ -137,6 +137,8 @@ def raw_extract(arq):
                 new_dict[k].append(v)
 
     dicts.append(new_dict)
+    
+    # inserting comments for relative empty keys    
     comment = ''
     for d in dicts:
         if d['comments']:

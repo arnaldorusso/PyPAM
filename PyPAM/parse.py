@@ -56,7 +56,6 @@ def csv_extract(arq):
     # FIXME Insert some functionalities to exclude
     #       duplicate measures
     curves = [l for l in dicts if len(l['No.']) >= 16]
-    #del pulses[16] # duplicated in the file.
 
 
     pulses = []
@@ -95,6 +94,7 @@ def raw_extract(arq):
     infos = re.compile("[0-9]{2}[A-Z]{3}[0-9]{4}")
     gain = re.compile("[A-Z]{4}", flags=re.I) #flag for case Insensitive
     comments = re.compile("%")
+    comments2 = re.compile(";")
     header = re.compile("No   Time")
     dados = re.compile("[0-9]{1,2}\s*[0-9]{2}")
     first = re.compile("[1]{1}\s")
@@ -111,7 +111,10 @@ def raw_extract(arq):
         if re.match(comments,line):
             new_dict['comments'].append(line)
 
-        if re.match(gain, line):
+        if re.match(comments2,line):
+            new_dict['comments'].append(line)
+
+        if re.match(gain,line):
             new_dict['gain'].append(line)
 
         if re.match(header,line):
@@ -134,6 +137,12 @@ def raw_extract(arq):
                 new_dict[k].append(v)
 
     dicts.append(new_dict)
+    comment = ''
+    for d in dicts:
+        if d['comments']:
+            comment = d['comments']
+        else:
+            d['comments'] = comment
         
     ## FIXME Insert some functionalities to exclude
     ##       duplicate measures

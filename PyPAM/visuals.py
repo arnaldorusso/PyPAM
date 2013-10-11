@@ -12,23 +12,31 @@ compr = ['470nm', '520nm', '645nm', '665nm']
 
 
 
-def etr_plot(curves, indir=newdir):
+def etr_plot(curves, indir):
     '''
-    ##################
-    ##  ETR Plot's  ##
+    Relative Electron Transference Rate plots.
+
+    INPUT
+    -----
+    curves : list of curves
+    indir : directory to save plots.
+
+    OUTPUT
+    ------
+    Figure saved (png)
     '''
     light = []
     etr = []
     opts = []
     x = []
     y = []
-    #for cur in xrange(len(curves)):
-    for cur in xrange(0,26):
-        light.append(np.float64(curves[cur]['PAR']))
-        etr.append(np.float64(curves[cur]['ETR1'])/1000.)
-        etr.append(np.float64(curves[cur]['ETR2'])/1000.)
-        etr.append(np.float64(curves[cur]['ETR3'])/1000.)
-        etr.append(np.float64(curves[cur]['ETR4'])/1000.)
+    for cur in curves:
+    #for cur in curves[0,26]:
+        light.append(np.float64(cur['PAR']))
+        etr.append(np.float64(cur['ETR1'])/1000.)
+        etr.append(np.float64(cur['ETR2'])/1000.)
+        etr.append(np.float64(cur['ETR3'])/1000.)
+        etr.append(np.float64(cur['ETR4'])/1000.)
         for value in etr:
             r.assign("x",light[0])
             r.assign("y",value)
@@ -71,9 +79,19 @@ def etr_plot(curves, indir=newdir):
 
 
 
-def yield_plot(pulses, indir=newdir):
-    '''################
-    ##  Bar Plot  ##
+def yield_plot(pulses, indir):
+    '''
+    BarPlot of Photosynthetic Efficiency
+
+    Input
+    ----
+    pulses : List of Saturating Pulses
+    indir : String of directory, to save figures
+
+    Output
+    ------
+    Figure saved (png)
+
     '''
 
     Date = []
@@ -85,16 +103,16 @@ def yield_plot(pulses, indir=newdir):
     ybl = []
     ygr = []
     ybr = []
-    for pul in xrange(len(pulses)):
-            Date.append(pulses[pul]['Date'][0])
-            Time.append(pulses[pul]['Time'][0])
-            y1.append(pulses[pul]['Yield1'][0])
-            y2.append(pulses[pul]['Yield2'][0])
-            y3.append(pulses[pul]['Yield3'][0])
-            y4.append(pulses[pul]['Yield4'][0])
-            ybl.append(pulses[pul]['Y(Bl)'][0])
-            ygr.append(pulses[pul]['Y(Gr)'][0])
-            ybr.append(pulses[pul]['Y(Br)'][0])
+    for pul in pulses:
+            Date.append(pul['Date'][0])
+            Time.append(pul['Time'][0])
+            y1.append(pul['Yield1'][0])
+            y2.append(pul['Yield2'][0])
+            y3.append(pul['Yield3'][0])
+            y4.append(pul['Yield4'][0])
+            ybl.append(pul['Y(Bl)'][0])
+            ygr.append(pul['Y(Gr)'][0])
+            ybr.append(pul['Y(Br)'][0])
 
 
     y1a = np.int32([l for i,l in enumerate(y1) if i%2 == 0])
@@ -114,8 +132,8 @@ def yield_plot(pulses, indir=newdir):
     
     ## add some
     ax.set_ylabel('Fv/Fm')
-    ax.set_xlabel('Tempo em horas')
-    ax.set_title(u'Eficiência Fotossintética')
+    ax.set_xlabel('Time- hours')
+    ax.set_title(u'Photosynthetic Efficiency')
     ax.set_ylim(50,700)
 
     ax2 = ax.twinx()
@@ -128,5 +146,4 @@ def yield_plot(pulses, indir=newdir):
 
     ax.legend((rec1[0], rec2[0]), ('A', 'B'), loc='upper left')
     
-    plt.savefig(indir + 'eficiencia_fotossintetica' + '.png')
-    #plt.show()
+    plt.savefig(indir + 'yield' + '.png')

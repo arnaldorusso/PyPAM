@@ -50,7 +50,12 @@ def csv_extract(arq):
                 new_dict = {}
                 for k in keys:
                     new_dict[k] = []
+            line = re.sub('""', str(np.nan),line)
             data = line.split(',')
+            try:
+                data = np.float64(data)
+            except:
+                data = data
             values = zip(keys, data)
             for k, v in values:
                 new_dict[k].append(v)
@@ -137,6 +142,7 @@ def raw_extract(arq):
                     new_dict[k] = []
                 dicts.append(old_dict)
             
+            line = re.sub('""', str(np.nan),line)
             data = line.split()
             values = zip(keys, data)
             for k,v in values:

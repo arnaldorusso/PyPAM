@@ -5,6 +5,19 @@ import numpy as np
 import re
 import sys
 
+def tryconvert(x):
+    '''
+    Convert if possible an string to float.
+    Parameter
+    ---------
+    x : value
+    '''
+    try:
+        y = np.float64(x)
+        return y
+    except:
+        return x
+
 
 def csv_extract(arq):
     '''
@@ -52,10 +65,7 @@ def csv_extract(arq):
                     new_dict[k] = []
             line = re.sub('""', str(np.nan),line)
             data = line.split(',')
-            try:
-                data = np.float64(data)
-            except:
-                data = data
+            data = [tryconvert(i) for i in data]
             values = zip(keys, data)
             for k, v in values:
                 new_dict[k].append(v)
@@ -144,6 +154,7 @@ def raw_extract(arq):
             
             line = re.sub('""', str(np.nan),line)
             data = line.split()
+            data = [tryconvert(i) for i in data]
             values = zip(keys, data)
             for k,v in values:
                 new_dict[k].append(v)

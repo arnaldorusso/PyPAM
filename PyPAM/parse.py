@@ -14,12 +14,15 @@ def csv_extract(arq):
     
     Parameters
     ----------
-    arq: opened csv file
+    arq: str
+        opened csv file
     
     Returns
     -------
-    curves : Store the "Rapid Light Curves"
-    pulses : Saturated light pulses
+    curves : arr
+        Store the "Rapid Light Curves"
+    pulses : arr
+        Saturated light pulses
     '''
     #f = open(sys.argv[1],'r')
     f = open(arq,'r')
@@ -79,12 +82,15 @@ def raw_extract(arq):
     
     Parameters
     ----------
-    arq: opened csv file
+    arq: str
+        opened csv file
     
     Returns
     -------
-    curves : Store the "Rapid Light Curves"
-    pulses : Saturated light pulses
+    curves : arr
+        Store the "Rapid Light Curves".
+    pulses : arr
+        Saturated light pulses.
     '''
 
     f = open(arq,'r')

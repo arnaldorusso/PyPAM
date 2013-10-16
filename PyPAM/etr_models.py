@@ -72,7 +72,7 @@ def platt(light,etr):
 
     opts = np.append(opts, r('min_ad(par = etr_sim$par)'))
     cpars = r('as.data.frame(cbind(p_alpha, p_Ek, p_etrmax))')
-    pars = np.array(cpars['p_alpha'], cpars['p_Ek'], cpars['p_etrmax'])
+    pars = [cpars['p_alpha'], cpars['p_Ek'], cpars['p_etrmax']]
 
     return opts, pars
 
@@ -117,10 +117,30 @@ def eilers_peeters(ini,light,etr):
     r('''grid<-expand.grid(list(a=seq(1e-07,9e-06,by=2e-07),
         b=seq(-0.002,0.006,by=0.002),c=seq(-6,6,by=2)))''')
     mini = r('''
-            coefficients(mini<-nls2(etr~light/(a*light^2+b*light+c),
+            mini<-coefficients(nls2(etr~light/(a*light^2+b*light+c),
             data=dat, start=grid, algorithm="brute-force"))
             ''')
-        
+
+    r('''
+    ep<-nls(etr~light/(a*light^2+b*light+c),data=dat,
+    start=list(a=mini[1],b=mini[2],c=mini[3]),
+    lower = list(0,-Inf,-Inf), trace=FALSE,
+    algorithm = "port", nls.control("maxiter"=100000, tol=0.15))
+
+    a2<-summary(ep)$coefficients[1]
+    b2<-summary(ep)$coefficients[2]
+    c2<-summary(ep)$coefficients[3]
+
+    alpha<-(1/c2)
+    etrmax<-1/(b2+2*(a2*c2)^0.5)
+    Eopt<-(c2/a2)^0.5
+    Ek<-etrmax/alpha
+    ''')
+    '''
+    #TODO Implement minimisation in Python.
+    # It's not very clear how to apply `nls2` in Python.
+    # minimize from a list of initial values.
+    
     #a = varis[0]
     #b = varis[1]
     #c = varis[2]
@@ -137,6 +157,12 @@ def eilers_peeters(ini,light,etr):
     Ek = etrmax/alpha
 
     params = [alpha, Ek, etrmax, Eopt]
+    '''
+    alpha = r('alpha')
+    Ek = r('Ek')
+    etr_max = r('etrmax')
+    params = [alpha, Ek, etr_max]
+    opts = r('opts<-fitted(ep)')
     
     return opts, params
 
@@ -145,6 +171,8 @@ def ep_minimize(varis,light,etr):
     Minimize values to be used on Eilers Peeters adjusting curve, as
     in `eilers_peeters` function.
 
+    #TODO
+    # Necessary when use it from python minimize.
     Parameters
     ----------
 

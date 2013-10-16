@@ -27,7 +27,7 @@ def platt(light,etr):
     opts : arr
         Values optimized
 
-    cpars : arr
+    pars : arr
         Curve parameters (alpha, Ek, ETRmax)
 
     See Also
@@ -62,17 +62,19 @@ def platt(light,etr):
     r('''
         if (p_Beta==0){
             p_etrmax<-param_Ps2
-            }
-        else
-            p_etrmax<-p_Ps2*(p_alpha/(p_alpha+p_Beta))*(p_Beta/(p_alpha+p_Beta))^(p_Beta/p_alpha)
-
+        } else {
+            p_etrmax<-p_Ps2*(p_alpha/(p_alpha+p_Beta))*
+            (p_Beta/(p_alpha+p_Beta))^(p_Beta/p_alpha)
+        }
+        
         p_Ek<-p_etrmax/p_alpha
     ''')
 
     opts = np.append(opts, r('min_ad(par = etr_sim$par)'))
-    cpars = r('c(p_alpha, p_Ek, p_etrmax)')
+    cpars = r('as.data.frame(cbind(p_alpha, p_Ek, p_etrmax))')
+    pars = np.array(cpars['p_alpha'], cpars['p_Ek'], cpars['p_etrmax'])
 
-    return opts, cpars
+    return opts, pars
 
 def eilers_peeters(ini,light,etr):
     '''
@@ -107,9 +109,24 @@ def eilers_peeters(ini,light,etr):
     between the light intensity and the rate of photosynthesis in
     phytoplankton. Ecol. Model. 42:199-215.
     '''
-    a = varis[0]
-    b = varis[1]
-    c = varis[2]
+    r('library(nls2)')
+    r.assign("x", light)
+    r.assign("y", etr)
+    r('dat<-as.data.frame(cbind(x,y))')
+    r('names(dat)<-c("light","etr")')
+    r('''grid<-expand.grid(list(a=seq(1e-07,9e-06,by=2e-07),
+        b=seq(-0.002,0.006,by=0.002),c=seq(-6,6,by=2)))''')
+    mini = r('''
+            coefficients(mini<-nls2(etr~light/(a*light^2+b*light+c),
+            data=dat, start=grid, algorithm="brute-force"))
+            ''')
+        
+    #a = varis[0]
+    #b = varis[1]
+    #c = varis[2]
+    a = mini['a']
+    b = mini['b']
+    c = mini['c']
 
     opts = (light/(a*(light**2)+(b*light)+c))
     ad = fmin(ep_minimize,varis,args=(light,etr))

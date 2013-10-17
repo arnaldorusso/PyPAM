@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -36,7 +37,7 @@ def etr_plot(curves, indir='.', subplot=False):
     if type(curves) != list:
         raise TypeError('variable "curves", must be a list')
 
-    for cur in curves:
+    for ii,cur in enumerate(curves):
         light.append(np.float64(cur['PAR']))
         etr.append(np.float64(cur['ETR1'])/1000.)
         etr.append(np.float64(cur['ETR2'])/1000.)
@@ -66,25 +67,27 @@ def etr_plot(curves, indir='.', subplot=False):
             #plt.subplot(6,5,cur+1)
             for i in xrange(len(opts)):
                 #plt.figure(figsize=(8, 6), dpi=80)
-                plt.subplot(6,5,cur+1)
+                plt.subplot(6,5,ii+1)
                 plt.subplots_adjust(wspace=0.2, hspace=0.7) #adjust spaces between subplots
                 plt.plot(light[0],etr[i], 'o', color=str(colors[i]))
                 plt.ylim(0, 100)
-                plt.xlabel('Luz (PAR)')
-                plt.ylabel(u'(ETR)')
+                plt.xlabel('Light (PAR)')
+                plt.ylabel(u'(rETR)')
                 plt.plot(np.sort(light[0]), np.sort(opts[i]), color=str(colors[i]), label=str(compr[i]))
                 plt.legend(loc='upper left', prop={'size':7})  #markerscale=0.1, borderpad=0.1, labelspacing=0.1, mpl.font_manager.FontManager(size=10))#,ncol=4,prop=font_manager.FontProperties(size=10))
-                plt.title(str(curves[cur]['Date'][0]+' '+curves[cur]['Time'][0]))
+                plt.title(str(cur['Date'][0]+' '+cur['Time'][0]))
             light = []
             etr = []
             e_sim = []
             opts = []
             x = []
             y = []
-        if subplot==True:
-            plt.savefig(indir + str(curves[cur]['Date'][0]+'_'+ curves[cur]['Time'][0] + '.png'))
+    if subplot==True:
+        plt.savefig(os.path.join(indir + str(cur['Date'][0]+'_'+ cur['Time'][0] + '.png')))
         
-        return opts
+    plt.show()
+        
+    return opts
 
 
 def yield_plot(pulses, indir):

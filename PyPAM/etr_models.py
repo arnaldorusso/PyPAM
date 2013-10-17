@@ -76,17 +76,13 @@ def platt(light,etr):
 
     return opts, pars
 
-def eilers_peeters(ini,light,etr):
+def eilers_peeters(light,etr,ini=None):
     '''
     Adjust a best fit curve to ExP curves, according to Eilers  & Peters
     Model.
 
     Parameters
     ----------
-    ini : arr
-        Initial values values to set the curve.
-        At Eilers-Peeters models (a,b,c).
-
     light : arr
         Generally PAR values. Where Photosynthetic Active Radiance
         interfer on Primary Production. 'light' is this parameter.
@@ -95,6 +91,11 @@ def eilers_peeters(ini,light,etr):
         Eletron Transference Rate, by means relative ETR, obtained from
         Rapid Light Curves.
 
+    ini : None
+        Initial values values to set the curve.
+        To insert initial values, they must be a list
+        of values of initial parameters (a,b,c) of Eilers-Peeters models    
+    
     Return
     ------
     opts : arr
@@ -114,15 +115,19 @@ def eilers_peeters(ini,light,etr):
     r.assign("y", etr)
     r('dat<-as.data.frame(cbind(x,y))')
     r('names(dat)<-c("light","etr")')
-    r('''grid<-expand.grid(list(a=seq(1e-07,9e-06,by=2e-07),
+
+    if ini == None:
+        r('''grid<-expand.grid(list(a=seq(1e-07,9e-06,by=2e-07),
         b=seq(-0.002,0.006,by=0.002),c=seq(-6,6,by=2)))''')
-    mini = r('''
+        mini = r('''
             mini<-coefficients(nls2(etr~light/(a*light^2+b*light+c),
             data=dat, start=grid, algorithm="brute-force"))
             ''')
-
-    r('''
-    ep<-nls(etr~light/(a*light^2+b*light+c),data=dat,
+    else:
+        mini = ini
+        r.assign("mini", mini)
+        
+    r('''ep<-nls(etr~light/(a*light^2+b*light+c),data=dat,
     start=list(a=mini[1],b=mini[2],c=mini[3]),
     lower = list(0,-Inf,-Inf), trace=FALSE,
     algorithm = "port", nls.control("maxiter"=100000, tol=0.15))
@@ -134,30 +139,29 @@ def eilers_peeters(ini,light,etr):
     alpha<-(1/c2)
     etrmax<-1/(b2+2*(a2*c2)^0.5)
     Eopt<-(c2/a2)^0.5
-    Ek<-etrmax/alpha
-    ''')
-    '''
-    #TODO Implement minimisation in Python.
-    # It's not very clear how to apply `nls2` in Python.
-    # minimize from a list of initial values.
+    Ek<-etrmax/alpha''')
     
-    #a = varis[0]
-    #b = varis[1]
-    #c = varis[2]
-    a = mini['a']
-    b = mini['b']
-    c = mini['c']
+    ##TODO Implement minimisation in Python.
+    ## It's not very clear how to apply `nls2` in Python.
+    ## minimize from a list of initial values.
+    
+    ##a = varis[0]
+    ##b = varis[1]
+    ##c = varis[2]
+    #a = mini['a']
+    #b = mini['b']
+    #c = mini['c']
 
-    opts = (light/(a*(light**2)+(b*light)+c))
-    ad = fmin(ep_minimize,varis,args=(light,etr))
+    #opts = (light/(a*(light**2)+(b*light)+c))
+    #ad = fmin(ep_minimize,varis,args=(light,etr))
 
-    alpha = (1./ad[2])
-    etrmax = 1./(ad[1]+2*(ad[0]*ad[2])**0.5)
-    Eopt = (ad[2]/ad[0])**0.5
-    Ek = etrmax/alpha
+    #alpha = (1./ad[2])
+    #etrmax = 1./(ad[1]+2*(ad[0]*ad[2])**0.5)
+    #Eopt = (ad[2]/ad[0])**0.5
+    #Ek = etrmax/alpha
 
-    params = [alpha, Ek, etrmax, Eopt]
-    '''
+    #params = [alpha, Ek, etrmax, Eopt]
+    
     alpha = r('alpha')
     Ek = r('Ek')
     etr_max = r('etrmax')
@@ -165,25 +169,3 @@ def eilers_peeters(ini,light,etr):
     opts = r('opts<-fitted(ep)')
     
     return opts, params
-
-def ep_minimize(varis,light,etr):
-    '''
-    Minimize values to be used on Eilers Peeters adjusting curve, as
-    in `eilers_peeters` function.
-
-    #TODO
-    # Necessary when use it from python minimize.
-    Parameters
-    ----------
-
-    Return
-    ------
-
-    '''
-    a = varis[0]
-    b = varis[1]
-    c = varis[2]
-    
-    opts = np.sum((etr-(light/(a*(light**2)+(b*light)+c)))**2)
-
-    return opts

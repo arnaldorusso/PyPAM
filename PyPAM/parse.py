@@ -80,7 +80,7 @@ def csv_extract(arq):
     for k in dicts:
         if k['No.']:
             if len(k['No.']) < 16:
-                if len(k['No.']) <= 3:
+                if len(k['No.']) <= 7:
                     pulses.append(k)
 
     return curves, pulses
@@ -177,7 +177,7 @@ def raw_extract(arq):
     for k in dicts[1:]:
         if k['No']:
             if len(k['No']) < 16:
-                if len(k['No']) <= 3:
+                if len(k['No']) <= 7:
                     pulses.append(k)
     
     return curves, pulses

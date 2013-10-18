@@ -55,7 +55,7 @@ def platt(light,etr):
         Ps<-params[3]
         return( ( (Ps*(1-exp(-alpha*x/Ps)) *exp(-Beta*x/Ps)) ))
     }""")
-    r('etr_sim<-optim(par=c(0.4, 1.5 , 80),fn=platt)')
+    r('etr_sim<-optim(par=c(0.4, 1.5 , 1500),fn=platt)')
     r('p_alpha<-etr_sim$par[1]')
     r('p_Beta<-etr_sim$par[2]')
     r('p_Ps2<-etr_sim$par[3]')
@@ -109,6 +109,28 @@ def eilers_peeters(light,etr,ini=None):
     P.H.C. Eilers and J.C.H Peeters. 1988. A model for the relationship
     between the light intensity and the rate of photosynthesis in
     phytoplankton. Ecol. Model. 42:199-215.
+
+    #TODO
+    ## Implement minimisation in Python.
+    ## It's not very clear how to apply `nls2` in Python.
+    ## minimize from a list of initial values.
+    
+    ##a = varis[0]
+    ##b = varis[1]
+    ##c = varis[2]
+    #a = mini['a']
+    #b = mini['b']
+    #c = mini['c']
+
+    #opts = (light/(a*(light**2)+(b*light)+c))
+    #ad = fmin(ep_minimize,varis,args=(light,etr))
+
+    #alpha = (1./ad[2])
+    #etrmax = 1./(ad[1]+2*(ad[0]*ad[2])**0.5)
+    #Eopt = (ad[2]/ad[0])**0.5
+    #Ek = etrmax/alpha
+
+    #params = [alpha, Ek, etrmax, Eopt]
     '''
     r('library(nls2)')
     r.assign("x", light)
@@ -140,27 +162,6 @@ def eilers_peeters(light,etr,ini=None):
     etrmax<-1/(b2+2*(a2*c2)^0.5)
     Eopt<-(c2/a2)^0.5
     Ek<-etrmax/alpha''')
-    
-    ##TODO Implement minimisation in Python.
-    ## It's not very clear how to apply `nls2` in Python.
-    ## minimize from a list of initial values.
-    
-    ##a = varis[0]
-    ##b = varis[1]
-    ##c = varis[2]
-    #a = mini['a']
-    #b = mini['b']
-    #c = mini['c']
-
-    #opts = (light/(a*(light**2)+(b*light)+c))
-    #ad = fmin(ep_minimize,varis,args=(light,etr))
-
-    #alpha = (1./ad[2])
-    #etrmax = 1./(ad[1]+2*(ad[0]*ad[2])**0.5)
-    #Eopt = (ad[2]/ad[0])**0.5
-    #Ek = etrmax/alpha
-
-    #params = [alpha, Ek, etrmax, Eopt]
     
     alpha = r('alpha')
     Ek = r('Ek')

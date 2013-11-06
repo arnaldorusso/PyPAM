@@ -8,7 +8,7 @@ from scipy.optimize import leastsq, fmin
 from rpy import r
 
 
-def platt(light,etr):
+def platt(light,etr,ini=None):
     '''
     Adjust a curve of best fit, following the Platt model.
 
@@ -21,7 +21,9 @@ def platt(light,etr):
     etr : arr
         Eletron Transference Rate, by means relative ETR, obtained from
         Rapid Light Curves.
-
+    
+    ini : List 
+        optional intial values for optimization proccess. 
     Returns
     -------
     opts : arr
@@ -39,8 +41,15 @@ def platt(light,etr):
     opts = []
     pars = []
 
-    r.assign("x", light)
-    r.assign("y", etr)
+    r.assign("x", np.array(light))
+    r.assign("y", np.array(etr))
+   
+    if ini == None:
+        r.assign('mini', [0.4,1.5,1500])
+    
+    else:
+        r.assign('mini', np.array(ini))
+    
     min_platt = r("""
     platt<- function(params){
         alpha<-params[1]
@@ -53,9 +62,9 @@ def platt(light,etr):
         alpha<-params[1]
         Beta<-params[2]
         Ps<-params[3]
-        return( ( (Ps*(1-exp(-alpha*x/Ps)) *exp(-Beta*x/Ps)) ))
+        return( ( (Ps*(1-exp(-alpha*x/Ps)) *exp(-Beta*x/Ps)) ) )
     }""")
-    r('etr_sim<-optim(par=c(0.4, 1.5 , 1500),fn=platt)')
+    r('etr_sim<-optim(par=mini, fn=platt)')
     r('p_alpha<-etr_sim$par[1]')
     r('p_Beta<-etr_sim$par[2]')
     r('p_Ps2<-etr_sim$par[3]')

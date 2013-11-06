@@ -41,14 +41,14 @@ def platt(light,etr,ini=None):
     opts = []
     pars = []
 
-    r.assign("x", np.array(light))
-    r.assign("y", np.array(etr))
+    r.assign("x", light[~np.isnan(light)])
+    r.assign("y", etr[~np.isnan(etr)])
    
     if ini == None:
-        r.assign('mini', [0.4,1.5,1500])
+        r.assign('ini', [0.4,1.5,1500])
     
     else:
-        r.assign('mini', np.array(ini))
+        r.assign('ini', np.array(ini))
     
     min_platt = r("""
     platt<- function(params){
@@ -64,14 +64,14 @@ def platt(light,etr,ini=None):
         Ps<-params[3]
         return( ( (Ps*(1-exp(-alpha*x/Ps)) *exp(-Beta*x/Ps)) ) )
     }""")
-    r('etr_sim<-optim(par=mini, fn=platt)')
+    r('etr_sim<-optim(par=ini, fn=platt)')
     r('p_alpha<-etr_sim$par[1]')
     r('p_Beta<-etr_sim$par[2]')
     r('p_Ps2<-etr_sim$par[3]')
     r('''
-        if (p_Beta==0){
-            p_etrmax<-param_Ps2
-        } else {
+        if (p_Beta==0 | p_Beta<0){
+            p_etrmax<-p_Ps2
+        }else {
             p_etrmax<-p_Ps2*(p_alpha/(p_alpha+p_Beta))*
             (p_Beta/(p_alpha+p_Beta))^(p_Beta/p_alpha)
         }

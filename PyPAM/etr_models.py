@@ -142,8 +142,8 @@ def eilers_peeters(light,etr,ini=None):
     #params = [alpha, Ek, etrmax, Eopt]
     '''
     r('library(nls2)')
-    r.assign("x", light)
-    r.assign("y", etr)
+    r.assign("x", light[~np.isnan(light)])
+    r.assign("y", etr[~np.isnan(etr)])
     r('dat<-as.data.frame(cbind(x,y))')
     r('names(dat)<-c("light","etr")')
 

@@ -111,7 +111,7 @@ def eilers_peeters(light,etr,ini=None):
         Values optimized
 
     params : arr
-        Curve Parameters (alpha, Ek, ETR_max, Eopt)
+        Curve Parameters (alpha, Ek, ETR_max)
 
     See Also
     --------

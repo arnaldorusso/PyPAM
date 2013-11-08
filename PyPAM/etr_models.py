@@ -85,6 +85,61 @@ def platt(light,etr,ini=None):
 
     return opts, pars
 
+def platt_opts(light, etr, ini=None, opt=None):
+    '''
+    Adjust a curve of best fit, following the Platt model.
+
+    Parameters
+    ----------
+    light : arr
+        Generally PAR values. Where Photosynthetic Active Radiance
+        interfer on Primary Production. 'light' is this parameter.
+    etr : arr
+        Eletron Transference Rate, by means relative ETR, obtained from
+        Rapid Light Curves.
+    ini : List 
+        optional intial values for optimization proccess. 
+    opt : arr
+        light range to be modeled.
+
+    Returns
+    -------
+    opts : arr
+        Values optimized according to opt list of PAR levels.
+    pars : arr
+        Curve parameters (alpha, Ek, ETRmax), acording to `platt`
+    '''
+    opts = []
+    pars = []
+
+    r.assign("y", etr[~np.isnan(etr)])
+    if opt == None:
+        r.assign("opt", light[~np.isnan(light)])
+    else:
+        r.assign("opt", opt[~np.isnan(opt)])
+       
+    if ini == None:
+        r.assign('ini', [0.4,1.5,1500])
+    
+    else:
+        r.assign('ini', np.array(ini))
+
+    op, platt_param = platt(light,etr, ini=ini)
+    r.assign('platt_param', platt_param)
+    
+    min_opt = r("""
+    min_opt<-function(params){ 
+        alpha<-params[1]
+        Beta<-params[2]
+        Ps<-params[3]
+        return( ( (Ps*(1-exp(-alpha*opt/Ps)) *exp(-Beta*opt/Ps)) ) )
+    }""")
+
+    opts = np.append(opts, r('min_opt(par = platt_param)'))
+    pars = platt_param
+
+    return opts, pars
+
 def eilers_peeters(light,etr,ini=None):
     '''
     Adjust a best fit curve to ExP curves, according to Eilers  & Peters

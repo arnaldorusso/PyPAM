@@ -87,7 +87,7 @@ def platt(light,etr,ini=None):
 
 def platt_opts(light, etr, ini=None, opt=None):
     '''
-    Adjust a curve of best fit, following the Platt model.
+    Adjust `opt` values of PAR levels following the Platt model.
 
     Parameters
     ----------

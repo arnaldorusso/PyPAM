@@ -89,7 +89,7 @@ def platt(light,etr,ini=None):
     return iniR, opts, pars
 
 def platt_opts(light, params):
-   """ 
+    """ 
     Adjust `opt` values of PAR levels following the Platt model.
 
     Parameters
@@ -138,7 +138,7 @@ def platt_opts(light, params):
 
 
 def eilers_peeters(light,etr,ini=None):
-   """
+    """
     Adjust a best fit curve to ExP curves, according to Eilers  & Peters
     Model.
 

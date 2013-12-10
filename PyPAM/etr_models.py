@@ -89,7 +89,7 @@ def platt(light,etr,ini=None):
     return iniR, opts, pars
 
 def platt_opts(light, params):
-    """ 
+    """
     Adjust `opt` values of PAR levels following the Platt model.
 
     Parameters
@@ -158,9 +158,10 @@ def eilers_peeters(light,etr,ini=None):
         of values of initial parameters (a,b,c) of Eilers-Peeters models
     Return
     ------
+    iniR : arr
+        Initial values modeled, with R `optim` function.
     opts : arr
         Values optimized
-
     params : arr
         Curve Parameters (alpha, Ek, ETR_max)
 
@@ -223,10 +224,11 @@ def eilers_peeters(light,etr,ini=None):
     Eopt<-(c2/a2)^0.5
     Ek<-etrmax/alpha''')
 
+    iniR = mini
     alpha = r('alpha')
     Ek = r('Ek')
     etr_max = r('etrmax')
     params = [alpha, Ek, etr_max]
     opts = r('opts<-fitted(ep)')
 
-    return opts, params
+    return iniR, opts, params

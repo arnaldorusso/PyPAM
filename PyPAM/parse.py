@@ -16,7 +16,10 @@ def tryconvert(x):
         y = np.float64(x)
         return y
     except:
-        return x
+        if x == '----':
+            return np.nan
+        else:
+            return x
 
 
 def csv_extract(arq):
@@ -114,7 +117,7 @@ def raw_extract(arq):
 
     infos = re.compile("[0-9]{2}[A-Z]{3}[0-9]{4}")
     gain = re.compile("[A-Z]{4}", flags=re.I) #flag for case Insensitive
-    comments = re.compile("%")
+    comments = re.compile("^%")
     comments2 = re.compile(";")
     header = re.compile("No   Time")
     dados = re.compile("[0-9]{1,2}\s*[0-9]{2}")

@@ -27,12 +27,12 @@ def csv_extract(arq):
     Parse a csv processed file by PhytoWIN.
     PhytoWIN is a software from WALZ ind., to proccess PhytoPAM data.
     http://www.walz.com/products/chl_p700/phyto-pam/phytowin.html
-    
+
     Parameters
     ----------
     arq: str
         opened csv file
-    
+
     Returns
     -------
     curves : arr
@@ -96,13 +96,13 @@ def raw_extract(arq):
     Parse raw data obtained with Phyto-Pam.
     This raw data is an .rpt file containing
     values of curves records, and other useful
-    informations.    
-    
+    informations.
+
     Parameters
     ----------
     arq: str
         opened csv file
-    
+
     Returns
     -------
     curves : arr
@@ -123,7 +123,7 @@ def raw_extract(arq):
     dados = re.compile("[0-9]{1,2}\s*[0-9]{2}")
     first = re.compile("[1]{1}\s")
     dicts = []
-    new_dict = {'comments':[], 'gain':[], 'info':[]}
+    new_dict = {'comments':[], 'comments2':[], 'gain':[], 'info':[]}
     keys = []
     for line in t:
 
@@ -136,25 +136,25 @@ def raw_extract(arq):
             new_dict['comments'].append(line)
 
         if re.match(comments2,line):
-            new_dict['comments'].append(line)
+            new_dict['comments2'].append(line)
 
         if re.match(gain,line):
             new_dict['gain'].append(line)
 
         if re.match(header,line):
-            keys = line.split() 
+            keys = line.split()
 
         if re.match(infos,line):
             new_dict['info'].append(line)
 
         elif re.match(dados,line):
             if re.match(first,line):
-                old_dict = new_dict                
-                new_dict = {'comments':[], 'gain':[], 'info':[]}
+                old_dict = new_dict
+                new_dict = {'comments':[], 'comments2':[], 'gain':[], 'info':[]}
                 for k in keys:
                     new_dict[k] = []
                 dicts.append(old_dict)
-            
+
             line = re.sub('""', str(np.nan),line)
             data = line.split()
             data = [tryconvert(i) for i in data]
@@ -163,15 +163,15 @@ def raw_extract(arq):
                 new_dict[k].append(v)
 
     dicts.append(new_dict)
-    
-    # inserting comments for relative empty keys    
+
+    # inserting comments for relative empty keys
     comment = ''
     for d in dicts:
         if d['comments']:
             comment = d['comments']
         else:
             d['comments'] = comment
-        
+
     ## FIXME Insert some functionalities to exclude
     ##       duplicate measures
     curves = [l for l in dicts[1:] if len(l['No']) >= 16]
@@ -182,6 +182,6 @@ def raw_extract(arq):
             if len(k['No']) < 16:
                 if len(k['No']) <= 7:
                     pulses.append(k)
-    
+
     return curves, pulses
 

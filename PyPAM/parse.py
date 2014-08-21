@@ -3,7 +3,7 @@
 
 import numpy as np
 import re
-import sys
+
 
 def tryconvert(x):
     '''
@@ -40,8 +40,8 @@ def csv_extract(arq):
     pulses : arr
         Saturated light pulses
     '''
-    #f = open(sys.argv[1],'r')
-    f = open(arq,'r')
+    # f = open(sys.argv[1],'r')
+    f = open(arq, 'r')
     t = f.readlines()
     f.close()
 
@@ -58,15 +58,15 @@ def csv_extract(arq):
             keys = line.split(',')
             for k in keys:
                 new_dict[k] = []
-        elif re.match(pre_dados,line):
+        elif re.match(pre_dados, line):
             if line.split(',')[2] == str(1):
-                #print line
+                # print line
                 if new_dict:
                     dicts.append(new_dict)
                 new_dict = {}
                 for k in keys:
                     new_dict[k] = []
-            line = re.sub('""', str(np.nan),line)
+            line = re.sub('""', str(np.nan), line)
             data = line.split(',')
             data = [tryconvert(i) for i in data]
             values = zip(keys, data)
@@ -78,7 +78,6 @@ def csv_extract(arq):
     #       duplicate measures
     curves = [l for l in dicts if len(l['No.']) >= 16]
 
-
     pulses = []
     for k in dicts:
         if k['No.']:
@@ -88,7 +87,7 @@ def csv_extract(arq):
 
     return curves, pulses
 
-#extract(sys.argv[1])
+# extract(sys.argv[1])
 
 
 def raw_extract(arq):
@@ -111,19 +110,22 @@ def raw_extract(arq):
         Saturated light pulses.
     '''
 
-    f = open(arq,'r')
+    f = open(arq, 'r')
     t = f.readlines()
     f.close()
 
     infos = re.compile("[0-9]{2}[A-Z]{3}[0-9]{4}")
-    gain = re.compile("[A-Z]{4}", flags=re.I) #flag for case Insensitive
+    gain = re.compile("[A-Z]{4}", flags=re.I)  # flag for case Insensitive
     comments = re.compile("^%")
     comments2 = re.compile(";")
     header = re.compile("No   Time")
     dados = re.compile("[0-9]{1,2}\s*[0-9]{2}")
     first = re.compile("[1]{1}\s")
     dicts = []
-    new_dict = {'comments':[], 'comments2':[], 'gain':[], 'info':[]}
+    new_dict = {'comments': [],
+                'comments2': [],
+                'gain': [],
+                'info': []}
     keys = []
     for line in t:
 
@@ -132,34 +134,37 @@ def raw_extract(arq):
         if not line:
             pass
 
-        if re.match(comments,line):
+        if re.match(comments, line):
             new_dict['comments'].append(line)
 
-        if re.match(comments2,line):
+        if re.match(comments2, line):
             new_dict['comments2'].append(line)
 
-        if re.match(gain,line):
+        if re.match(gain, line):
             new_dict['gain'].append(line)
 
-        if re.match(header,line):
+        if re.match(header, line):
             keys = line.split()
 
-        if re.match(infos,line):
+        if re.match(infos, line):
             new_dict['info'].append(line)
 
-        elif re.match(dados,line):
-            if re.match(first,line):
+        elif re.match(dados, line):
+            if re.match(first, line):
                 old_dict = new_dict
-                new_dict = {'comments':[], 'comments2':[], 'gain':[], 'info':[]}
+                new_dict = {'comments': [],
+                            'comments2': [],
+                            'gain': [],
+                            'info': []}
                 for k in keys:
                     new_dict[k] = []
                 dicts.append(old_dict)
 
-            line = re.sub('""', str(np.nan),line)
+            line = re.sub('""', str(np.nan), line)
             data = line.split()
             data = [tryconvert(i) for i in data]
             values = zip(keys, data)
-            for k,v in values:
+            for k, v in values:
                 new_dict[k].append(v)
 
     dicts.append(new_dict)
@@ -172,8 +177,8 @@ def raw_extract(arq):
         else:
             d['comments'] = comment
 
-    ## FIXME Insert some functionalities to exclude
-    ##       duplicate measures
+    # FIXME Insert some functionalities to exclude
+    #       duplicate measures
     curves = [l for l in dicts[1:] if len(l['No']) >= 16]
 
     pulses = []
@@ -184,4 +189,3 @@ def raw_extract(arq):
                     pulses.append(k)
 
     return curves, pulses
-

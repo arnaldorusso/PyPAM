@@ -2,13 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from scipy.optimize import leastsq, fmin
 from rpy import r
 
 
-def platt(light,etr,ini=None):
+def platt(light, etr, ini=None):
     """
     Adjust a curve of best fit, following the Platt model.
 
@@ -36,8 +33,9 @@ def platt(light,etr,ini=None):
 
     See Also
     --------
-    T. Platt, C.L. Gallegos and W.G. Harrison, 1980. Photoinibition of photosynthesis in natural
-        assemblages of marine phytoplankton
+    T. Platt, C.L. Gallegos and W.G. Harrison, 1980. Photoinibition of
+        photosynthesis in natural assemblages of marine phytoplankton. Journal
+        of Marine Research, 38:4, 687-701.
 
     """
     opts = []
@@ -46,8 +44,8 @@ def platt(light,etr,ini=None):
     r.assign("x", light[~np.isnan(light)])
     r.assign("y", etr[~np.isnan(etr)])
 
-    if ini == None:
-        r.assign('ini', [0.4,1.5,1500])
+    if ini is None:
+        r.assign('ini', [0.4, 1.5, 1500])
 
     else:
         r.assign('ini', np.array(ini))
@@ -88,6 +86,7 @@ def platt(light,etr,ini=None):
 
     return iniR, opts, pars
 
+
 def platt_opts(light, params):
     """
     Adjust `opt` values of PAR levels following the Platt model.
@@ -106,23 +105,22 @@ def platt_opts(light, params):
         Values optimized according to `params`and list of PAR levels.
     """
     opts = []
-    pars = []
 
     r.assign("light", light[~np.isnan(light)])
     r.assign("params", params)
-    #if opt == None:
-    #    r.assign("opt", light[~np.isnan(light)])
-    #else:
-    #    r.assign("opt", opt[~np.isnan(opt)])
+    # if opt == None:
+    #     r.assign("opt", light[~np.isnan(light)])
+    # else:
+    #     r.assign("opt", opt[~np.isnan(opt)])
 
-    #if ini == None:
-    #    r.assign('ini', [0.4,1.5,1500])
+    # if ini == None:
+    #     r.assign('ini', [0.4,1.5,1500])
 
-    #else:
-    #    r.assign('ini', np.array(ini))
+    # else:
+    #     r.assign('ini', np.array(ini))
 
-    #op, platt_param = platt(light,etr, ini=ini)
-    #r.assign('platt_param', platt_param)
+    # op, platt_param = platt(light,etr, ini=ini)
+    # r.assign('platt_param', platt_param)
 
     min_opt = r("""
     min_opt<-function(light,params){
@@ -137,7 +135,7 @@ def platt_opts(light, params):
     return opts
 
 
-def eilers_peeters(light,etr,ini=None):
+def eilers_peeters(light, etr, ini=None):
     """
     Adjust a best fit curve to ExP curves, according to Eilers  & Peters
     Model.
@@ -199,7 +197,7 @@ def eilers_peeters(light,etr,ini=None):
     r('dat<-as.data.frame(cbind(x,y))')
     r('names(dat)<-c("light","etr")')
 
-    if ini == None:
+    if ini is None:
         r('''grid<-expand.grid(list(a=seq(1e-07,9e-06,by=2e-07),
         b=seq(-0.002,0.006,by=0.002),c=seq(-6,6,by=2)))''')
         mini = r('''

@@ -9,16 +9,28 @@ def npq(plight, pdark):
     """"Try to compute NPQ (Non-photochemical quenching) from pulses
         values
 
-        input: dict, dict
+        Parameters
+        ----------
+        plight : dict
+            light-addapted pulse.
+        pdark : dict
+            dark-addpated pulse.
 
-               plight = light-addapted pulse.
-               pdark = dark-addpated pulse.
+        Returns
+        -------
+        NPQ : float
+        light-addapted pulse : np.array   
+        dark-addapted pulse : np.array
 
-        output:
-               float: NPQ
-               np.array: light-addapted pulse
-               np.array: dark-addapted pulse
+        Examples
+        --------
+        from PyPAM.parse import raw_extract
+        curves, pulses = raw_extract('file.rpt')
+        
+        plight = pulses[0]
+        pdark = pulses[1]
 
+        npq, lightpulses, darkpulses = npq(plight, pdark)
     """
     ppl = np.array([plight['Fm1'],
                     plight['Fm2'],

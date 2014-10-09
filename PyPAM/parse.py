@@ -8,6 +8,9 @@ import re
 def tryconvert(x):
     '''
     Convert if possible an string to float.
+    If this string is a negative value, it will discarded as
+    numpy.nan
+    
     Parameter
     ---------
     x : value

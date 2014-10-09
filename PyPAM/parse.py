@@ -14,7 +14,10 @@ def tryconvert(x):
     '''
     try:
         y = np.float64(x)
-        return y
+        if y < 0:
+            return np.nan
+        else:
+            return y
     except:
         if x == '----':
             return np.nan

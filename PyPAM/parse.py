@@ -18,6 +18,8 @@ def tryconvert(x):
     except:
         if x == '----':
             return np.nan
+        if x < 0:
+            return np.nan
         else:
             return x
 

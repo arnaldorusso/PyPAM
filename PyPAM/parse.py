@@ -44,7 +44,7 @@ def csv_extract(arq):
     curves : arr
         Store the "Rapid Light Curves"
     pulses : arr
-        Saturated light pulses
+        Response of saturated light pulses
     '''
     # f = open(sys.argv[1],'r')
     f = open(arq, 'r')

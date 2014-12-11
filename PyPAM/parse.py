@@ -8,13 +8,19 @@ import re
 def tryconvert(x):
     '''
     Convert if possible an string to float.
+    If this string is a negative value, it will discarded as
+    numpy.nan
+    
     Parameter
     ---------
     x : value
     '''
     try:
         y = np.float64(x)
-        return y
+        if y < 0:
+            return np.nan
+        else:
+            return y
     except:
         if x == '----':
             return np.nan
@@ -38,7 +44,7 @@ def csv_extract(arq):
     curves : arr
         Store the "Rapid Light Curves"
     pulses : arr
-        Saturated light pulses
+        Response of saturated light pulses
     '''
     # f = open(sys.argv[1],'r')
     f = open(arq, 'r')

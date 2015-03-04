@@ -185,12 +185,12 @@ def raw_extract(arq):
 
     # FIXME Insert some functionalities to exclude
     #       duplicate measures
-    curves = [l for l in dicts[1:] if len(l['No']) >= 16]
+    curves = [l for l in dicts[1:] if len(l['No']) >= 10]
 
     pulses = []
     for k in dicts[1:]:
         if k['No']:
-            if len(k['No']) < 16:
+            if len(k['No']) < 10:
                 if len(k['No']) <= 7:
                     pulses.append(k)
 

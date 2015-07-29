@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.21702.svg)](http://dx.doi.org/10.5281/zenodo.21702)
+
 PyPAM - Python Processing Tool for Pulse Amplitude Modulate
 ===========================================================
 

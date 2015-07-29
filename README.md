@@ -14,4 +14,4 @@ MIT licensed. See the bundled [LICENSE](https://github.com/arnaldorusso/PyPAM/bl
 Additional Links
 ----------------
 
-To cite, use our figshare DOI (http://dx.doi.org/10.6084/m9.figshare.985562) or our Zenodo DOI.
+To cite, use our figshare DOI (http://dx.doi.org/10.6084/m9.figshare.985562) or our [Zenodo DOI](http://dx.doi.org/10.5281/zenodo.21702).

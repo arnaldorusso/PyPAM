@@ -3,7 +3,7 @@
 
 from PyPAM.parse import csv_extract, raw_extract, tryconvert
 import numpy as np
-from scipy.stats import nanmean, nanstd
+from scipy import nanmean, nanstd
 
 def npq(plight, pdark):
     """"Try to compute NPQ (Non-photochemical quenching) from pulses
